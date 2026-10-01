@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แบบทดสอบวิทยาการคำนวณ 6</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:"Segoe UI","Tahoma",sans-serif;
+  background:linear-gradient(135deg,#eef5ff,#f8fbff);
+  color:#172033;min-height:100vh;
+}
+.container{max-width:900px;margin:0 auto;padding:28px 16px}
+.card{
+  background:#fff;border-radius:22px;padding:30px;
+  box-shadow:0 12px 35px rgba(33,66,120,.12);margin-bottom:20px
+}
+.header{
+  background:linear-gradient(135deg,#123b78,#1769aa);
+  color:white;border-radius:22px;padding:28px;margin-bottom:20px;
+  text-align:center
+}
+.header h1{margin:0 0 8px;font-size:30px}
+.header p{margin:5px 0;opacity:.92}
+.badge{display:inline-block;background:#fff;color:#14518a;padding:7px 14px;border-radius:999px;font-weight:700;margin-top:10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+label{font-weight:700;font-size:15px;display:block;margin-bottom:7px}
+input,select{
+  width:100%;padding:13px 14px;border:1px solid #d7deea;border-radius:11px;
+  font-size:16px;outline:none;background:#fff
+}
+input:focus,select:focus{border-color:#1769aa;box-shadow:0 0 0 3px rgba(23,105,170,.1)}
+.btn{
+  border:0;border-radius:12px;padding:14px 22px;font-size:17px;font-weight:800;
+  cursor:pointer;background:#1769aa;color:#fff;transition:.2s
+}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.05)}
+.btn.secondary{background:#e9eef6;color:#23334d}
+.btn.danger{background:#c62828}
+.center{text-align:center}
+.hidden{display:none!important}
+.exam-top{
+  position:sticky;top:0;z-index:10;background:#fff;padding:12px 0 15px;
+}
+.exam-bar{
+  display:flex;justify-content:space-between;align-items:center;gap:15px;
+  background:#f4f8fc;border-radius:15px;padding:12px 16px;border:1px solid #e2e9f2
+}
+.timer{font-size:22px;font-weight:900;color:#b42318}
+.timer.safe{color:#1769aa}
+.timer.warning{color:#d97706}
+.progress{height:9px;background:#e8edf4;border-radius:10px;overflow:hidden;margin-top:12px}
+.progress > div{height:100%;background:#1769aa;width:0%;transition:.2s}
+.question-no{font-size:15px;color:#637083;font-weight:700;margin-bottom:10px}
+.question{font-size:21px;line-height:1.55;font-weight:800;margin-bottom:20px}
+.option{
+  display:flex;align-items:flex-start;gap:12px;padding:15px;margin:11px 0;
+  border:2px solid #e3e8ef;border-radius:13px;cursor:pointer;transition:.15s
+}
+.option:hover{border-color:#8ab8df;background:#f7fbff}
+.option.selected{border-color:#1769aa;background:#edf6ff}
+.option input{width:auto;margin-top:4px;accent-color:#1769aa}
+.option span{font-size:17px;line-height:1.45}
+.nav{display:flex;justify-content:flex-end;margin-top:24px}
+.info{
+  padding:14px 16px;background:#fff8e6;border-left:4px solid #e0a100;
+  border-radius:8px;margin:18px 0;line-height:1.6
+}
+.result-score{font-size:54px;font-weight:900;color:#1769aa;margin:5px 0}
+.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}
+.stat{background:#f4f8fc;border-radius:14px;padding:16px;text-align:center}
+.stat strong{display:block;font-size:23px}
+.small{color:#68758a;font-size:14px}
+@media(max-width:650px){
+  .grid,.result-grid{grid-template-columns:1fr}
+  .card{padding:20px}
+  .header h1{font-size:24px}
+  .question{font-size:18px}
+  .exam-bar{align-items:flex-start;flex-direction:column}
+  .timer{font-size:20px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<section id="startScreen">
+  <div class="header">
+    <div class="badge">วิทยาการคำนวณ 6</div>
+    <h1>แบบทดสอบออนไลน์</h1>
+    <p>จำนวน 20 ข้อ • เวลา 20 นาที • คะแนนเต็ม 20 คะแนน</p>
+  </div>
+
+  <div class="card">
+    <h2>ข้อมูลผู้เข้าสอบ</h2>
+    <p class="small">กรุณากรอกข้อมูลให้ครบก่อนเริ่มทำข้อสอบ</p>
+    <div class="grid">
+      <div>
+        <label for="firstName">ชื่อ</label>
+        <input id="firstName" type="text" placeholder="กรอกชื่อ">
+      </div>
+      <div>
+        <label for="lastName">นามสกุล</label>
+        <input id="lastName" type="text" placeholder="กรอกนามสกุล">
+      </div>
+      <div>
+        <label for="number">เลขที่</label>
+        <input id="number" type="number" min="1" placeholder="เช่น 15">
+      </div>
+      <div>
+        <label for="grade">ชั้น</label>
+        <input id="grade" type="text" value="ม.6" readonly>
+      </div>
+      <div>
+        <label for="room">ห้อง</label>
+        <input id="room" type="text" placeholder="เช่น 5">
+      </div>
+    </div>
+
+    <div class="info">
+      <b>ข้อกำหนดในการสอบ</b><br>
+      1) ระบบจะสุ่มลำดับข้อสอบและตัวเลือก<br>
+      2) เมื่อกด “ถัดไป” แล้วจะไม่สามารถย้อนกลับไปแก้ข้อก่อนหน้าได้<br>
+      3) เวลาสอบ 20 นาที เมื่อหมดเวลาระบบจะส่งคำตอบให้อัตโนมัติ
+    </div>
+    <div class="center">
+      <button class="btn" onclick="startExam()">เริ่มทำข้อสอบ</button>
+    </div>
+  </div>
+</section>
+
+<section id="examScreen" class="hidden">
+  <div class="exam-top">
+    <div class="exam-bar">
+      <div>
+        <b id="studentDisplay"></b><br>
+        <span class="small" id="classDisplay"></span>
+      </div>
+      <div>
+        <span class="small">เวลาที่เหลือ</span><br>
+        <span class="timer safe" id="timer">20:00</span>
+      </div>
+    </div>
+    <div class="progress"><div id="progress"></div></div>
+  </div>
+
+  <div class="card">
+    <div class="question-no" id="questionNo"></div>
+    <div class="question" id="questionText"></div>
+    <div id="options"></div>
+    <div class="nav">
+      <button class="btn" id="nextBtn" onclick="nextQuestion()">ถัดไป</button>
+    </div>
+  </div>
+</section>
+
+<section id="resultScreen" class="hidden">
+  <div class="header">
+    <div class="badge">ส่งข้อสอบเรียบร้อย</div>
+    <h1>ผลการทำแบบทดสอบ</h1>
+    <p id="resultStudent"></p>
+  </div>
+  <div class="card center">
+    <div class="small">คะแนนที่ได้</div>
+    <div class="result-score" id="score"></div>
+    <div class="small" id="percent"></div>
+
+    <div class="result-grid">
+      <div class="stat"><span class="small">ตอบถูก</span><strong id="correct"></strong></div>
+      <div class="stat"><span class="small">ตอบผิด/ไม่ตอบ</span><strong id="wrong"></strong></div>
+      <div class="stat"><span class="small">เวลาที่ใช้</span><strong id="usedTime"></strong></div>
+    </div>
+
+    <div class="info" style="text-align:left">
+      ผลการสอบถูกจัดเตรียมสำหรับบันทึกแล้ว ครูสามารถดาวน์โหลดผลของนักเรียนคนนี้เป็น CSV
+      เพื่อนำไปรวมคะแนนใน Excel/Google Sheets ได้ทันที
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn" id="downloadBtn" onclick="downloadResult()">ดาวน์โหลดคะแนน CSV</button>
+      <button class="btn secondary" onclick="location.reload()">กลับหน้าแรก</button>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<script>
+const questionBank = [
+ {q:"ข้อใดอธิบายความหมายของปัญญาประดิษฐ์ (AI) ได้เหมาะสมที่สุด?",
+  o:["ระบบที่ทำงานได้เฉพาะตามคำสั่งตายตัวเท่านั้น","เทคโนโลยีที่ทำให้คอมพิวเตอร์สามารถเรียนรู้ วิเคราะห์ หรือทำงานที่ต้องใช้ความสามารถเชิงปัญญา","โปรแกรมสำหรับสร้างเว็บไซต์เท่านั้น","อุปกรณ์ที่ใช้แทนเครือข่ายอินเทอร์เน็ต"],a:1},
+ {q:"หากต้องการให้ระบบ AI จำแนกรูปภาพขยะเป็นประเภทต่าง ๆ สิ่งใดมีความสำคัญต่อการฝึกโมเดลมากที่สุด?",
+  o:["ข้อมูลฝึกที่มีคุณภาพและมีป้ายกำกับเหมาะสม","การเพิ่มความสว่างหน้าจอ","การใช้คอมพิวเตอร์ที่ไม่มีอินเทอร์เน็ตเท่านั้น","การเปลี่ยนชื่อไฟล์ภาพทุกไฟล์"],a:0},
+ {q:"ข้อใดเป็นตัวอย่างของการใช้ AI อย่างมีความรับผิดชอบ?",
+  o:["นำผลจาก AI ไปใช้ทันทีโดยไม่ตรวจสอบ","ใช้ AI สร้างข้อมูลเท็จเพื่อให้ผู้อื่นเข้าใจผิด","ตรวจสอบความถูกต้องของข้อมูลและพิจารณาผลกระทบก่อนนำไปใช้","เปิดเผยข้อมูลส่วนตัวของผู้อื่นให้ AI วิเคราะห์"],a:2},
+ {q:"เมื่อใช้ Generative AI ช่วยทำรายงาน นักเรียนควรปฏิบัติอย่างไร?",
+  o:["คัดลอกทุกอย่างโดยไม่ตรวจสอบ","ตรวจสอบข้อเท็จจริง เรียบเรียงด้วยความเข้าใจ และอ้างอิงแหล่งข้อมูลที่เกี่ยวข้อง","ให้ AI ทำทั้งหมดและส่งทันที","ใช้ข้อมูลที่ AI สร้างขึ้นโดยถือว่าถูกต้องเสมอ"],a:1},
+ {q:"ข้อมูลใดมีลักษณะเป็นข้อมูลส่วนบุคคลตามหลักการคุ้มครองข้อมูลส่วนบุคคล?",
+  o:["อุณหภูมิของห้องเรียน","ชื่อและเบอร์โทรศัพท์ของบุคคล","จำนวนโต๊ะในห้อง","สีของกระดาน"],a:1},
+ {q:"การเปิดใช้การยืนยันตัวตนแบบสองปัจจัย (2FA) ช่วยเรื่องใดมากที่สุด?",
+  o:["เพิ่มความปลอดภัยในการเข้าสู่บัญชี","ทำให้อินเทอร์เน็ตเร็วขึ้น","เพิ่มพื้นที่จัดเก็บข้อมูล","ทำให้แบตเตอรี่โทรศัพท์ใช้งานได้นานขึ้น"],a:0},
+ {q:"ข้อใดเป็นพฤติกรรมที่ช่วยลดความเสี่ยงจากฟิชชิง (Phishing)?",
+  o:["กดลิงก์ทุกลิงก์ที่ส่งมาทางข้อความ","ตรวจสอบ URL และแหล่งที่มาก่อนกรอกข้อมูลสำคัญ","ส่งรหัสผ่านให้ผู้ส่งเพื่อยืนยันตัวตน","ใช้รหัสผ่านเดียวกันทุกเว็บไซต์"],a:1},
+ {q:"Digital Footprint หมายถึงอะไร?",
+  o:["รอยเท้าที่เกิดจากการเดินบนพื้น","ร่องรอยข้อมูลและกิจกรรมที่บุคคลทิ้งไว้จากการใช้งานดิจิทัล","โปรแกรมป้องกันไวรัส","ระบบสำรองไฟฟ้า"],a:1},
+ {q:"ข้อใดสอดคล้องกับแนวคิดการคิดเชิงคำนวณ (Computational Thinking)?",
+  o:["แก้ปัญหาโดยเดาสุ่ม","แบ่งปัญหาใหญ่เป็นส่วนย่อยและหาแนวทางแก้ปัญหาอย่างเป็นระบบ","จำคำตอบให้ได้มากที่สุด","หลีกเลี่ยงการวิเคราะห์ปัญหา"],a:1},
+ {q:"การแบ่งปัญหาใหญ่ให้เป็นปัญหาย่อย ๆ เรียกว่าอะไร?",
+  o:["Decomposition","Encryption","Simulation","Authentication"],a:0},
+ {q:"ข้อใดเป็นตัวอย่างของการหา Pattern Recognition?",
+  o:["สังเกตว่าข้อมูลยอดขายเพิ่มขึ้นทุกวันศุกร์และนำรูปแบบนั้นมาวิเคราะห์","ลบข้อมูลทั้งหมด","เปลี่ยนรหัสผ่าน","ติดตั้งโปรแกรมใหม่"],a:0},
+ {q:"อัลกอริทึมที่ดีควรมีลักษณะอย่างไร?",
+  o:["คลุมเครือและตีความได้หลายแบบ","มีขั้นตอนชัดเจนและสามารถนำไปแก้ปัญหาได้","ต้องยาวที่สุดเสมอ","ไม่จำเป็นต้องมีจุดสิ้นสุด"],a:1},
+ {q:"หากนักเรียนพบข่าวที่น่าสงสัยในสื่อสังคมออนไลน์ ควรทำอย่างไร?",
+  o:["แชร์ต่อทันที","ตรวจสอบจากหลายแหล่งที่น่าเชื่อถือก่อนเชื่อหรือแชร์","เพิ่มข้อความให้ดูน่าตื่นเต้น","ส่งต่อเฉพาะในกลุ่มเพื่อน"],a:1},
+ {q:"ข้อใดเป็นตัวอย่างของ Cyberbullying?",
+  o:["ส่งการบ้านให้เพื่อน","เผยแพร่ข้อความหรือภาพเพื่อทำร้ายหรือประจานผู้อื่นทางออนไลน์","ค้นหาข้อมูลเพื่อทำรายงาน","เข้าร่วมชั้นเรียนออนไลน์"],a:1},
+ {q:"การตั้งรหัสผ่านที่ปลอดภัยควรเป็นอย่างไร?",
+  o:["ใช้วันเกิดเพื่อจำง่าย","ใช้ 123456","ใช้รหัสผ่านที่ยาว เดายาก และแตกต่างกันในแต่ละบริการ","ใช้ชื่อเล่นเหมือนกันทุกบัญชี"],a:2},
+ {q:"ข้อใดเป็นประโยชน์ของ Cloud Computing?",
+  o:["เข้าถึงข้อมูลหรือบริการผ่านเครือข่ายได้ตามสิทธิ์ที่กำหนด","ทำให้ไม่ต้องรักษาความปลอดภัย","ทำให้ข้อมูลทุกชนิดเป็นสาธารณะ","ใช้ได้โดยไม่ต้องมีบัญชีหรือสิทธิ์ใด ๆ"],a:0},
+ {q:"หากเว็บไซต์มี HTTPS แสดงว่าอย่างไร?",
+  o:["เว็บไซต์ปลอดภัย 100% ในทุกด้าน","การสื่อสารระหว่างเบราว์เซอร์กับเว็บไซต์มีการเข้ารหัสตามโปรโตคอล HTTPS","เว็บไซต์ไม่มีโฆษณา","เว็บไซต์ไม่มีทางเป็นเว็บไซต์ปลอม"],a:1},
+ {q:"ข้อใดเป็นการใช้เทคโนโลยีตามหลักจริยธรรม?",
+  o:["นำข้อมูลของผู้อื่นมาเผยแพร่โดยไม่ได้รับอนุญาต","เคารพสิทธิ ความเป็นส่วนตัว และตรวจสอบผลกระทบจากการใช้เทคโนโลยี","สร้างบัญชีปลอมเพื่อหลอกผู้อื่น","ใช้ซอฟต์แวร์ละเมิดลิขสิทธิ์"],a:1},
+ {q:"Precision ในการประเมินโมเดลจำแนกประเภทสื่อถึงอะไร?",
+  o:["สัดส่วนของสิ่งที่โมเดลทำนายว่าเป็นบวกแล้วเป็นบวกจริง","จำนวนข้อมูลทั้งหมดในชุดข้อมูล","เวลาที่ใช้ฝึกโมเดล","ขนาดของไฟล์โมเดล"],a:0},
+ {q:"หากระบบ AI ให้คำตอบที่อาจมีผลกระทบต่อบุคคล นักเรียนควรทำอย่างไร?",
+  o:["เชื่อคำตอบทันทีเพราะเป็น AI","ตรวจสอบข้อมูล แหล่งอ้างอิง อคติ และพิจารณาผลกระทบก่อนตัดสินใจ","เผยแพร่คำตอบทันที","ไม่จำเป็นต้องรับผิดชอบเพราะ AI เป็นผู้สร้าง"],a:1}
+];
+
+let questions=[], current=0, answers=[], timeLeft=1200, timerId=null, startTime=0, submitted=false;
+let student={};
+const GOOGLE_APPS_SCRIPT_URL = ""; 
+// ใส่ URL ของ Google Apps Script Web App ที่นี่ หากต้องการส่งคะแนนเข้า Google Sheets อัตโนมัติ
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
+  return a;
+}
+
+function startExam(){
+  const first=document.getElementById("firstName").value.trim();
+  const last=document.getElementById("lastName").value.trim();
+  const num=document.getElementById("number").value.trim();
+  const grade=document.getElementById("grade").value;
+  const room=document.getElementById("room").value.trim();
+  if(!first||!last||!num||!grade||!room){
+    alert("กรุณากรอกข้อมูลผู้เข้าสอบให้ครบทุกช่อง");
+    return;
+  }
+  student={first,last,num,grade,room};
+  questions=shuffle(questionBank).map(x=>{
+    const opts=x.o.map((text,i)=>({text,correct:i===x.a}));
+    const mixed=shuffle(opts);
+    return {q:x.q,o:mixed};
+  });
+  answers=new Array(20).fill(null);
+  current=0; timeLeft=1200; startTime=Date.now(); submitted=false;
+  document.getElementById("startScreen").classList.add("hidden");
+  document.getElementById("examScreen").classList.remove("hidden");
+  document.getElementById("studentDisplay").textContent=`${first} ${last}`;
+  document.getElementById("classDisplay").textContent=`เลขที่ ${num} • ${grade}/${room}`;
+  renderQuestion();
+  timerId=setInterval(tick,1000);
+}
+
+function renderQuestion(){
+  const item=questions[current];
+  document.getElementById("questionNo").textContent=`ข้อที่ ${current+1} / 20`;
+  document.getElementById("questionText").textContent=item.q;
+  const box=document.getElementById("options");
+  box.innerHTML="";
+  item.o.forEach((opt,i)=>{
+    const label=document.createElement("label");
+    label.className="option"+(answers[current]===i?" selected":"");
+    label.innerHTML=`<input type="radio" name="answer" value="${i}" ${answers[current]===i?"checked":""}>
+      <span>${String.fromCharCode(65+i)}. ${opt.text}</span>`;
+    label.onclick=()=>selectAnswer(i);
+    box.appendChild(label);
+  });
+  document.getElementById("nextBtn").textContent=current===19?"ส่งข้อสอบ":"ถัดไป";
+  document.getElementById("progress").style.width=((current)/20*100)+"%";
+}
+
+function selectAnswer(i){
+  answers[current]=i;
+  [...document.querySelectorAll(".option")].forEach((el,idx)=>el.classList.toggle("selected",idx===i));
+}
+
+function nextQuestion(){
+  if(answers[current]===null){
+    alert("กรุณาเลือกคำตอบก่อนดำเนินการต่อ");
+    return;
+  }
+  if(current===19){
+    if(confirm("คุณไม่สามารถย้อนกลับมาแก้คำตอบได้หลังส่งข้อสอบ\nยืนยันส่งข้อสอบหรือไม่?")) submitExam();
+    return;
+  }
+  current++;
+  renderQuestion();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function tick(){
+  if(submitted)return;
+  timeLeft--;
+  const m=Math.floor(timeLeft/60), s=timeLeft%60;
+  const el=document.getElementById("timer");
+  el.textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+  el.className="timer "+(timeLeft<=120?"warning":timeLeft<=300?"safe":"safe");
+  if(timeLeft<=0) submitExam(true);
+}
+
+function submitExam(auto=false){
+  if(submitted)return;
+  submitted=true;
+  clearInterval(timerId);
+  let correct=0;
+  answers.forEach((ans,i)=>{if(ans!==null && questions[i].o[ans].correct)correct++});
+  const used=1200-timeLeft;
+  const mm=Math.floor(used/60), ss=used%60;
+  document.getElementById("examScreen").classList.add("hidden");
+  document.getElementById("resultScreen").classList.remove("hidden");
+  document.getElementById("resultStudent").textContent=`${student.first} ${student.last} • เลขที่ ${student.num} • ${student.grade}/${student.room}`;
+  document.getElementById("score").textContent=`${correct} / 20`;
+  document.getElementById("percent").textContent=`คิดเป็น ${correct*5}%`;
+  document.getElementById("correct").textContent=correct;
+  document.getElementById("wrong").textContent=20-correct;
+  document.getElementById("usedTime").textContent=`${mm}น. ${ss}วิ.`;
+  if(auto) alert("หมดเวลาสอบ ระบบได้ส่งคำตอบให้อัตโนมัติ");
+  sendToGoogleSheets({
+    timestamp:new Date().toISOString(),
+    firstName:student.first,
+    lastName:student.last,
+    number:student.num,
+    grade:student.grade,
+    room:student.room,
+    score:correct,
+    percent:correct*5,
+    correct:correct,
+    wrong:20-correct,
+    usedSeconds:used,
+    usedTime:`${mm} นาที ${ss} วินาที`
+  });
+}
+
+function downloadResult(){
+  let correct=0;
+  answers.forEach((ans,i)=>{if(ans!==null && questions[i].o[ans].correct)correct++});
+  const used=1200-timeLeft;
+  const mm=Math.floor(used/60), ss=used%60;
+  const rows=[
+    ["วันที่-เวลา","ชื่อ","นามสกุล","เลขที่","ชั้น","ห้อง","คะแนน","ร้อยละ","ถูก","ผิด/ไม่ตอบ","เวลาที่ใช้"],
+    [new Date().toLocaleString("th-TH"),student.first,student.last,student.num,student.grade,student.room,correct,correct*5,correct,20-correct,`${mm} นาที ${ss} วินาที`]
+  ];
+  const csv=rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\r\n");
+  const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=`ผลสอบ_${student.first}_${student.last}.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function sendToGoogleSheets(data){
+  if(!GOOGLE_APPS_SCRIPT_URL) return;
+  try{
+    fetch(GOOGLE_APPS_SCRIPT_URL,{
+      method:"POST",
+      mode:"no-cors",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify(data)
+    });
+  }catch(e){
+    console.warn("ไม่สามารถส่ง Google Sheets:",e);
+  }
+}
+</script>
+</body>
+</html>
